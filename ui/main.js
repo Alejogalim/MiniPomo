@@ -204,6 +204,12 @@ window.addEventListener("mousedown", (e) => {
 });
 
 const isLinux = navigator.userAgent.includes("Linux");
+
+// Browser / PWA build (e.g. Chromebooks): no native shell to talk to.
+if (!tauri) {
+  document.body.classList.add("web");
+  navigator.serviceWorker?.register("sw.js").catch(() => {});
+}
 if (isLinux) {
   // Dragging is done natively so the widget can show its own grab cursor; the
   // window manager's drag paints its own cursor instead.

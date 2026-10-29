@@ -18,6 +18,11 @@ body {
   transform: scale(var(--scale, 1));
 }
 
+/* Browser / PWA build: no transparent desktop behind the widget. */
+body.web {
+  background: linear-gradient(160deg, #f7f2fb, #ece2f4);
+}
+
 #stage {
   position: relative;
   display: flex;
