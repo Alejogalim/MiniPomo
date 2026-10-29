@@ -9,6 +9,9 @@ const ASSETS = [
   "./timer.js",
   "./characters.js",
   "./manifest.webmanifest",
+  "./tracker.html",
+  "./tracker.css",
+  "./tracker.js",
   "./icon-192.png",
   "./icon-512.png",
 ];

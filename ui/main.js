@@ -7,6 +7,7 @@ const MODE_LABELS = { focus: "focus", short: "short break", long: "long break" }
 const SCALE_MIN = 0.75;
 const SCALE_MAX = 1.5;
 const SCALE_STEP = 0.25;
+const SCALES = [0.75, 1, 1.25, 1.5];
 
 const stored = (key, fallback) => {
   const value = Number(localStorage.getItem(key));
@@ -92,9 +93,11 @@ function stopTimer() {
 }
 
 function finishPhaseNow() {
+  const ended = session.mode;
   stopTimer();
   session = finishPhase(session);
   localStorage.setItem("rounds", session.rounds);
+  if (ended === "focus") recordCycle();
   celebrating = true;
   endSound();
   clearTimeout(celebrateId);
@@ -140,6 +143,24 @@ function nextCharacter() {
   characterIndex = (characterIndex + 1) % CHARACTER_KEYS.length;
   localStorage.setItem("character", characterIndex);
   render();
+}
+
+// One entry per day in local time, read by the tracker window.
+function dayKey(date) {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function recordCycle() {
+  let history = {};
+  try {
+    history = JSON.parse(localStorage.getItem("history")) ?? {};
+  } catch {
+    // corrupted history: start over rather than lose the cycle
+  }
+  const key = dayKey(new Date());
+  history[key] = (history[key] ?? 0) + 1;
+  localStorage.setItem("history", JSON.stringify(history));
 }
 
 function toggleSettings() {
@@ -253,8 +274,14 @@ $("toggle").onclick = toggle;
 $("reset").onclick = reset;
 $("character").onclick = nextCharacter;
 $("settings").onclick = toggleSettings;
-$("smaller").onclick = () => applyScale(scale - SCALE_STEP);
-$("bigger").onclick = () => applyScale(scale + SCALE_STEP);
+$("resize").onclick = () => {
+  const next = SCALES[(SCALES.indexOf(scale) + 1) % SCALES.length];
+  applyScale(next);
+};
+$("tracker").onclick = () => {
+  if (tauri) tauri.invoke("open_tracker");
+  else window.open("tracker.html", "minipomo-tracker", "width=560,height=540");
+};
 
 render();
 applyScale(scale).then(() => layout(true));

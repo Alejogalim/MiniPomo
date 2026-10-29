@@ -61,8 +61,11 @@ cp /usr/share/applications/MiniPomo.desktop ~/Desktop/ 2>/dev/null || true
 ## Use
 
 - ▶ / ❚❚ in the bottom-left of the sign starts and pauses.
-- ≡ in the bottom-right opens the settings panel: reset, change character,
-  smaller, larger. The size is remembered.
+- ≡ in the bottom-right opens the settings panel: reset, character, resize and
+  the tracker. Resize cycles through four sizes (0.75 → 1 → 1.25 → 1.5 → back)
+  and the choice is remembered.
+- The gear opens the **tracker** window: a contribution-style grid of the days
+  you used it, a to-do list and a done list, plus a light/dark toggle.
 - Drag by the character or the sign.
 - The four pips are the current set of cycles; the badge in the corner is the
   total, kept across restarts.

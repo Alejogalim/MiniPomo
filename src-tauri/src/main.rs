@@ -3,7 +3,7 @@
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder},
     tray::TrayIconBuilder,
-    Manager, PhysicalPosition,
+    Manager, PhysicalPosition, WebviewUrl, WebviewWindowBuilder,
 };
 
 #[tauri::command]
@@ -145,11 +145,30 @@ fn drag_update(_window: tauri::WebviewWindow) -> Result<(), String> {
 #[tauri::command]
 fn drag_end() {}
 
+// The tracker lives in its own window; recreate it if the user closed it.
+#[tauri::command]
+fn open_tracker(app: tauri::AppHandle) -> Result<(), String> {
+    if let Some(window) = app.get_webview_window("tracker") {
+        let _ = window.show();
+        let _ = window.set_focus();
+        return Ok(());
+    }
+    WebviewWindowBuilder::new(&app, "tracker", WebviewUrl::App("tracker.html".into()))
+        .title("MiniPomo Tracker")
+        .inner_size(560.0, 470.0)
+        .min_inner_size(420.0, 380.0)
+        .center()
+        .build()
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             set_widget_size,
             apply_layout,
+            open_tracker,
             drag_begin,
             drag_update,
             drag_end

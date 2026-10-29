@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MiniPomo Tracker</title>
+    <link rel="stylesheet" href="tracker.css" />
+  </head>
+  <body class="light">
+    <header>
+      <h1>MINIPOMO<span class="blink">_</span></h1>
+      <button id="theme" aria-label="Toggle dark mode">☾</button>
+    </header>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>DAYS</h2>
+        <span id="streak" class="muted"></span>
+      </div>
+      <div id="graph" class="graph"></div>
+      <div class="legend">
+        <span>less</span>
+        <i class="cell level-0"></i><i class="cell level-1"></i><i class="cell level-2"></i
+        ><i class="cell level-3"></i><i class="cell level-4"></i>
+        <span>more</span>
+      </div>
+    </section>
+
+    <div class="columns">
+      <section class="card">
+        <h2>TO DO</h2>
+        <form id="add">
+          <input id="text" maxlength="80" placeholder="add a task" autocomplete="off" />
+          <button aria-label="Add task">+</button>
+        </form>
+        <ul id="todo"></ul>
+      </section>
+
+      <section class="card">
+        <h2>DONE</h2>
+        <ul id="done"></ul>
+      </section>
+    </div>
+
+    <p class="hint muted">click a task to move it · click a done task to remove it</p>
+    <script type="module" src="tracker.js"></script>
+  </body>
+</html>
