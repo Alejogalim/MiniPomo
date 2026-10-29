@@ -46,7 +46,7 @@ let audio = null;
 // Small synthesised sounds so there are no audio files to ship. The context is
 // created on the first click (start), which is what lets the later end-of-phase
 // sound play without another gesture.
-function sound(notes) {
+function sound(notes, type = "triangle") {
   try {
     audio ??= new AudioContext();
     if (audio.state === "suspended") audio.resume();
@@ -54,12 +54,15 @@ function sound(notes) {
       const at = audio.currentTime + offset;
       const osc = audio.createOscillator();
       const gain = audio.createGain();
-      osc.type = "sine";
+      osc.type = type;
       osc.frequency.value = freq;
       osc.connect(gain);
       gain.connect(audio.destination);
+      // A quick attack and a short hold; a straight exponential decay to zero
+      // turns the note into a barely audible click.
       gain.gain.setValueAtTime(0.0001, at);
-      gain.gain.exponentialRampToValueAtTime(volume, at + 0.01);
+      gain.gain.linearRampToValueAtTime(volume, at + 0.012);
+      gain.gain.exponentialRampToValueAtTime(volume * 0.45, at + duration * 0.55);
       gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
       osc.start(at);
       osc.stop(at + duration);
@@ -69,13 +72,13 @@ function sound(notes) {
   }
 }
 
-const startSound = () => sound([[520, 0, 0.12, 0.08]]);
+const startSound = () => sound([[587, 0, 0.22, 0.6]]);
 
 const endSound = () =>
   sound([
-    [660, 0, 0.3, 0.16],
-    [880, 0.2, 0.35, 0.16],
-    [1046, 0.42, 0.5, 0.14],
+    [659, 0, 0.3, 0.6],
+    [880, 0.28, 0.3, 0.6],
+    [1175, 0.56, 0.55, 0.55],
   ]);
 
 function remainingNow() {
