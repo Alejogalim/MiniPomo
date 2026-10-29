@@ -5,11 +5,6 @@ export function newSession() {
   return { mode: "focus", remaining: DURATIONS.focus, running: false, rounds: 0 };
 }
 
-export function tick(s) {
-  if (!s.running || s.remaining <= 0) return s;
-  return { ...s, remaining: s.remaining - 1 };
-}
-
 export function finishPhase(s) {
   if (s.mode === "focus") {
     const rounds = s.rounds + 1;

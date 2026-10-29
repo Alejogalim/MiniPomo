@@ -1,13 +1,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::sync::atomic::{AtomicI32, Ordering};
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder},
     tray::TrayIconBuilder,
-    Manager, PhysicalPosition, WindowEvent,
+    Manager, PhysicalPosition,
 };
-
-static LAST_POS: (AtomicI32, AtomicI32) = (AtomicI32::new(i32::MIN), AtomicI32::new(i32::MIN));
 
 #[tauri::command]
 fn set_widget_size(window: tauri::WebviewWindow, width: f64, height: f64) -> Result<(), String> {
@@ -16,45 +13,44 @@ fn set_widget_size(window: tauri::WebviewWindow, width: f64, height: f64) -> Res
         .map_err(|e| e.to_string())
 }
 
-// Put the widget 24px from the bottom-right corner using the drawn content's
-// box, so window padding (GTK adds some) does not push it off the corner.
+// Place the drawn content 24px from the bottom-right corner and clip the input
+// region to it, so window padding (GTK adds some) neither pushes the widget off
+// the corner nor swallows clicks meant for the desktop.
 #[tauri::command]
-fn snap_corner(
+fn apply_layout(
     window: tauri::WebviewWindow,
     x: f64,
     y: f64,
     width: f64,
     height: f64,
+    snap: bool,
 ) -> Result<(), String> {
-    let Some(monitor) = window.primary_monitor().map_err(|e| e.to_string())? else {
-        return Ok(());
-    };
-    let scale = window.scale_factor().map_err(|e| e.to_string())?;
-    let screen = monitor.size();
-    let margin = 24.0 * scale;
-    let right = (x + width) * scale;
-    let bottom = (y + height) * scale;
-    window
-        .set_position(PhysicalPosition::new(
-            screen.width as f64 - right - margin,
-            screen.height as f64 - bottom - margin,
-        ))
-        .map_err(|e| e.to_string())
+    if snap {
+        if let Some(monitor) = window.primary_monitor().map_err(|e| e.to_string())? {
+            let scale = window.scale_factor().map_err(|e| e.to_string())?;
+            let screen = monitor.size();
+            let margin = 24.0 * scale;
+            window
+                .set_position(PhysicalPosition::new(
+                    screen.width as f64 - (x + width) * scale - margin,
+                    screen.height as f64 - (y + height) * scale - margin,
+                ))
+                .map_err(|e| e.to_string())?;
+        }
+    }
+    set_input_region(&window, x as i32, y as i32, width as i32, height as i32)
 }
 
-// Clip the window's input region to the visible widget so the transparent
-// margins pass clicks through to whatever is behind them.
 #[cfg(target_os = "linux")]
-#[tauri::command]
-fn set_hit_rect(
-    window: tauri::WebviewWindow,
+fn set_input_region(
+    window: &tauri::WebviewWindow,
     x: i32,
     y: i32,
     width: i32,
     height: i32,
 ) -> Result<(), String> {
-    use gtk::prelude::*;
     use gtk::gdk;
+    use gtk::prelude::*;
 
     fn apply(win: &gdk::Window, x: i32, y: i32, width: i32, height: i32) {
         let region = cairo::Region::create();
@@ -72,10 +68,11 @@ fn set_hit_rect(
     Ok(())
 }
 
+// Windows and macOS have no per-region input API; the window is sized to the
+// widget instead, so there is no margin left to clip.
 #[cfg(not(target_os = "linux"))]
-#[tauri::command]
-fn set_hit_rect(
-    _window: tauri::WebviewWindow,
+fn set_input_region(
+    _window: &tauri::WebviewWindow,
     _x: i32,
     _y: i32,
     _width: i32,
@@ -152,45 +149,12 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             set_widget_size,
-            snap_corner,
-            set_hit_rect,
+            apply_layout,
             drag_begin,
             drag_update,
             drag_end
         ])
         .setup(|app| {
-            if let Some(window) = app.get_webview_window("main") {
-                // WebKitGTK reports a minimum size that blocks shrinking the widget.
-                let _ = window.set_min_size(Some(tauri::LogicalSize::new(80.0, 80.0)));
-                // Snapping needs the window's real size, which only arrives with the
-                // resize event. Reading inner_size() here can return a stale value
-                // and leave the widget drifting away from the corner at startup.
-                let w = window.clone();
-                window.on_window_event(move |event| {
-                    if !matches!(event, WindowEvent::Resized(_)) {
-                        return;
-                    }
-                    let Ok(Some(monitor)) = w.primary_monitor() else {
-                        return;
-                    };
-                    // The resize event payload is unreliable on GTK (it can differ
-                    // from the real size and change on every move), so read it back.
-                    let Ok(size) = w.inner_size() else {
-                        return;
-                    };
-                    let screen = monitor.size();
-                    let margin = 24;
-                    let (x, y) = (
-                        screen.width as i32 - size.width as i32 - margin,
-                        screen.height as i32 - size.height as i32 - margin,
-                    );
-                    if LAST_POS.0.swap(x, Ordering::SeqCst) != x
-                        || LAST_POS.1.swap(y, Ordering::SeqCst) != y
-                    {
-                        let _ = w.set_position(PhysicalPosition::new(x, y));
-                    }
-                });
-            }
             let toggle = MenuItemBuilder::with_id("toggle", "Show / Hide").build(app)?;
             let quit = MenuItemBuilder::with_id("quit", "Quit").build(app)?;
             let menu = MenuBuilder::new(app).items(&[&toggle, &quit]).build()?;
@@ -216,5 +180,5 @@ fn main() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("error while running Mini Pomodoro");
+        .expect("error while running MiniPomo");
 }

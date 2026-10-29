@@ -1,13 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DURATIONS, CYCLE, newSession, tick, finishPhase, petState, cyclesFilled } from "./timer.js";
-
-test("tick counts down only while running", () => {
-  const idle = newSession();
-  assert.equal(tick(idle).remaining, DURATIONS.focus);
-  const running = { ...idle, running: true };
-  assert.equal(tick(running).remaining, DURATIONS.focus - 1);
-});
+import { DURATIONS, CYCLE, newSession, finishPhase, petState, cyclesFilled } from "./timer.js";
 
 test("focus goes to short break, every 4th focus goes to long break", () => {
   let s = newSession();

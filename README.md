@@ -18,7 +18,13 @@ Grab the file for your system from the [latest release](../../releases/latest):
 | Other Linux | `MiniPomo_*_amd64.AppImage` | `chmod +x MiniPomo_*.AppImage && ./MiniPomo_*.AppImage` |
 
 After installing, search for **MiniPomo** in your application menu (on Ubuntu it
-lands in the app grid and the Activities search).
+lands in the app grid and the Activities search). The `.deb` and `.rpm` also drop
+a **MiniPomo** launcher on your Desktop. AppImage users can copy the bundled
+desktop entry instead:
+
+```bash
+cp /usr/share/applications/MiniPomo.desktop ~/Desktop/ 2>/dev/null || true
+```
 
 ## Use
 
@@ -60,3 +66,7 @@ ui/            HTML, CSS and JS (no bundler)
 src-tauri/     Rust shell: tray, window, drag, size, input region
 .github/       release workflow building all three platforms
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
