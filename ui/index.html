@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Pomodoro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="app">
+      <div id="stage">
+        <div id="pet"></div>
+        <div id="sign">
+          <div id="total" title="Completed cycles">0</div>
+          <div id="panel">
+            <div id="view-timer">
+              <div id="time">25:00</div>
+              <div id="mode">focus</div>
+              <div id="cycles"><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div id="view-settings">
+              <button id="reset" aria-label="Reset timer">↺</button>
+              <button id="character" aria-label="Change character">✦</button>
+              <button id="smaller" aria-label="Smaller">−</button>
+              <button id="bigger" aria-label="Larger">+</button>
+            </div>
+          </div>
+          <button id="toggle" class="corner" aria-label="Start or pause">▶</button>
+          <button id="settings" class="corner" aria-label="Settings">≡</button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
