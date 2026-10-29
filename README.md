@@ -16,6 +16,22 @@ Grab the file for your system from the [latest release](../../releases/latest):
 | macOS | `MiniPomo_*_universal.dmg` | Open it, drag MiniPomo into Applications. First launch: **System Settings → Privacy & Security → Open Anyway** (unsigned app). |
 | Ubuntu / Debian | `MiniPomo_*_amd64.deb` | Double-click it, or `sudo apt install ./MiniPomo_*_amd64.deb` |
 | Other Linux | `MiniPomo_*_amd64.AppImage` | `chmod +x MiniPomo_*.AppImage && ./MiniPomo_*.AppImage` |
+| Chromebook | — | Install the web app from **https://alejogalim.github.io/MiniPomo/** (see below) |
+
+### Chromebooks
+
+ChromeOS runs MiniPomo as an installable web app, so no Linux container is
+needed:
+
+1. Open **https://alejogalim.github.io/MiniPomo/** in Chrome.
+2. Click the install icon in the address bar (or ⋮ → *Cast, save and share* →
+   *Install page as app*).
+3. It shows up in the launcher and on the shelf like any other app, and works
+   offline.
+
+It runs in a normal window rather than floating over other windows — ChromeOS
+does not allow always-on-top for web apps. Chromebooks with Linux enabled can
+also run the AppImage or the `.deb` if you want the desktop widget.
 
 ### Package managers
 
@@ -26,7 +42,7 @@ without the quarantine flag, so there is no Gatekeeper prompt at all.
 brew install --cask alejogalim/minipomo/minipomo
 ```
 
-**Windows — winget.** The manifest is [in review](https://github.com/microsoft/winget-pkgs/pull/465726);
+**Windows — winget.** The manifest is [in review](https://github.com/microsoft/winget-pkgs/pull/465734);
 once merged:
 
 ```powershell
