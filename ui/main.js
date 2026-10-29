@@ -42,22 +42,41 @@ function render() {
 }
 
 let audio = null;
-function chime() {
-  audio ??= new AudioContext();
-  if (audio.state === "suspended") audio.resume();
-  [660, 880].forEach((freq, i) => {
-    const start = audio.currentTime + i * 0.25;
-    const osc = audio.createOscillator();
-    const gain = audio.createGain();
-    osc.frequency.value = freq;
-    osc.connect(gain);
-    gain.connect(audio.destination);
-    gain.gain.setValueAtTime(0.2, start);
-    gain.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
-    osc.start(start);
-    osc.stop(start + 0.4);
-  });
+
+// Small synthesised sounds so there are no audio files to ship. The context is
+// created on the first click (start), which is what lets the later end-of-phase
+// sound play without another gesture.
+function sound(notes) {
+  try {
+    audio ??= new AudioContext();
+    if (audio.state === "suspended") audio.resume();
+    for (const [freq, offset, duration, volume] of notes) {
+      const at = audio.currentTime + offset;
+      const osc = audio.createOscillator();
+      const gain = audio.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(audio.destination);
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(volume, at + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
+      osc.start(at);
+      osc.stop(at + duration);
+    }
+  } catch {
+    // no audio device: stay silent rather than break the timer
+  }
 }
+
+const startSound = () => sound([[520, 0, 0.12, 0.08]]);
+
+const endSound = () =>
+  sound([
+    [660, 0, 0.3, 0.16],
+    [880, 0.2, 0.35, 0.16],
+    [1046, 0.42, 0.5, 0.14],
+  ]);
 
 function remainingNow() {
   return Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
@@ -74,7 +93,7 @@ function finishPhaseNow() {
   session = finishPhase(session);
   localStorage.setItem("rounds", session.rounds);
   celebrating = true;
-  chime();
+  endSound();
   clearTimeout(celebrateId);
   celebrateId = setTimeout(() => {
     celebrating = false;
@@ -101,6 +120,7 @@ function toggle() {
     session = { ...session, running: true };
     deadline = Date.now() + session.remaining * 1000;
     timerId = setInterval(onTick, 250);
+    startSound();
   }
   render();
 }

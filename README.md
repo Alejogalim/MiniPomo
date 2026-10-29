@@ -53,7 +53,8 @@ cp /usr/share/applications/MiniPomo.desktop ~/Desktop/ 2>/dev/null || true
 - Tray icon: Show / Hide, Quit.
 
 Timer: 25 min focus, 5 min short break, 15 min long break after every 4 focus
-rounds, with a chime and a celebrating character.
+rounds. A soft blip plays when a phase starts, a three-note chime when it ends,
+and the character celebrates.
 
 ## Linux notes
 
