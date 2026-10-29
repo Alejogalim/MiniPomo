@@ -61,12 +61,37 @@ function renderTodos() {
 
   for (const item of todos) {
     const li = document.createElement("li");
-    li.textContent = item.text;
-    li.onclick = () => {
-      item.done = !item.done;
-      saveTodos();
-      renderTodos();
-    };
+    const label = document.createElement("span");
+    label.textContent = item.text;
+    li.append(label);
+
+    if (item.done) {
+      // click to bring it back, the × removes it for good
+      li.onclick = () => {
+        item.done = false;
+        saveTodos();
+        renderTodos();
+      };
+      const remove = document.createElement("button");
+      remove.className = "del";
+      remove.textContent = "×";
+      remove.title = "Delete task";
+      remove.setAttribute("aria-label", `Delete ${item.text}`);
+      remove.onclick = (event) => {
+        event.stopPropagation();
+        todos = todos.filter((t) => t !== item);
+        saveTodos();
+        renderTodos();
+      };
+      li.append(remove);
+    } else {
+      li.onclick = () => {
+        item.done = true;
+        saveTodos();
+        renderTodos();
+      };
+    }
+
     (item.done ? done : todo).append(li);
   }
 
@@ -98,6 +123,6 @@ function applyTheme(theme) {
 }
 themeButton.onclick = () => applyTheme(document.body.classList.contains("dark") ? "light" : "dark");
 
-applyTheme(read("theme", "light"));
+applyTheme(localStorage.getItem("theme") === "dark" ? "dark" : "light");
 renderGraph();
 renderTodos();

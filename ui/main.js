@@ -167,6 +167,15 @@ function toggleSettings() {
   $("sign").classList.toggle("open");
 }
 
+// The tracker owns the theme toggle; the widget follows it.
+function applyTheme() {
+  document.body.classList.toggle("dark", localStorage.getItem("theme") === "dark");
+}
+window.addEventListener("storage", (event) => {
+  if (event.key === "theme") applyTheme();
+});
+window.addEventListener("focus", applyTheme);
+
 // Size the window to the drawn widget and place it 24px from the corner. Linux
 // additionally clips the window's input shape so the transparent corners pass
 // clicks through; Windows and macOS have no such API, so the window itself has
@@ -284,4 +293,5 @@ $("tracker").onclick = () => {
 };
 
 render();
+applyTheme();
 applyScale(scale).then(() => layout(true));

@@ -6,7 +6,27 @@ body {
   overflow: hidden;
   user-select: none;
   font-family: "DejaVu Sans Mono", ui-monospace, monospace;
-  color: #3d2f4a;
+  color: var(--ink);
+}
+
+:root {
+  --ink: #3d2f4a;
+  --sign-bg: #fff8ec;
+  --sign-hover: #ffe9d6;
+  --sign-active: #ffd9bd;
+  --badge-bg: #3d2f4a;
+  --badge-ink: #fff8ec;
+  --sign-shadow: rgba(61, 47, 74, 0.3);
+}
+
+body.dark {
+  --ink: #f3ecf7;
+  --sign-bg: #2e2737;
+  --sign-hover: #3d3448;
+  --sign-active: #4a3f57;
+  --badge-bg: #f3ecf7;
+  --badge-ink: #2e2737;
+  --sign-shadow: rgba(0, 0, 0, 0.45);
 }
 
 #app {
@@ -21,6 +41,9 @@ body {
 /* Browser / PWA build: no transparent desktop behind the widget. */
 body.web {
   background: linear-gradient(160deg, #f7f2fb, #ece2f4);
+}
+body.web.dark {
+  background: linear-gradient(160deg, #241f2b, #2e2737);
 }
 
 #stage {
@@ -72,9 +95,9 @@ body.dragging #stage {
   width: 148px;
   box-sizing: border-box;
   padding: 8px 6px 26px;
-  background: #fff8ec;
-  border: 3px solid #3d2f4a;
-  box-shadow: 4px 4px 0 rgba(61, 47, 74, 0.3);
+  background: var(--sign-bg);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--sign-shadow);
   text-align: center;
 }
 
@@ -86,8 +109,8 @@ body.dragging #stage {
   height: 16px;
   padding: 0 3px;
   box-sizing: border-box;
-  background: #3d2f4a;
-  color: #fff8ec;
+  background: var(--badge-bg);
+  color: var(--badge-ink);
   font-size: 10px;
   line-height: 16px;
   text-align: center;
@@ -109,7 +132,7 @@ body.dragging #stage {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: #fff8ec;
+  background: var(--sign-bg);
   transform: translateX(101%);
   transition: transform 0.18s ease;
 }
@@ -137,7 +160,7 @@ body.dragging #stage {
   width: 7px;
   height: 7px;
   margin: 0 2px;
-  border: 1px solid #3d2f4a;
+  border: 1px solid var(--ink);
 }
 #cycles i.on {
   background: var(--body, #ff7a6b);
@@ -145,20 +168,20 @@ body.dragging #stage {
 
 button {
   padding: 0;
-  border: 2px solid #3d2f4a;
+  border: 2px solid var(--ink);
   border-radius: 0;
-  background: #fff8ec;
-  color: #3d2f4a;
+  background: var(--sign-bg);
+  color: var(--ink);
   font-family: inherit;
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
 }
 button:hover {
-  background: #ffe9d6;
+  background: var(--sign-hover);
 }
 button:active {
-  background: #ffd9bd;
+  background: var(--sign-active);
 }
 
 #view-settings button {
@@ -183,8 +206,8 @@ button:active {
   right: 4px;
 }
 #sign.open #settings {
-  background: #3d2f4a;
-  color: #fff8ec;
+  background: var(--badge-bg);
+  color: var(--badge-ink);
 }
 
 @keyframes bob {

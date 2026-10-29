@@ -180,10 +180,33 @@ li {
   border: 1px dashed var(--muted);
   cursor: pointer;
   overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
 }
 li:hover {
   border-style: solid;
   border-color: var(--accent);
+}
+
+li .del {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 0;
+  min-width: 22px;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+li .del:hover {
+  color: var(--accent);
+  background: transparent;
 }
 
 #done li {
