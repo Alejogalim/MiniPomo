@@ -42,7 +42,7 @@ without the quarantine flag, so there is no Gatekeeper prompt at all.
 brew install --cask alejogalim/minipomo/minipomo
 ```
 
-**Windows — winget.** The manifest is [in review](https://github.com/microsoft/winget-pkgs/pull/465734);
+**Windows — winget.** The manifest is [in review](https://github.com/microsoft/winget-pkgs/pull/465758);
 once merged:
 
 ```powershell
