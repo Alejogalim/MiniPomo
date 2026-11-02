@@ -30,20 +30,36 @@ body.dark {
 }
 
 #app {
-  height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--base-w, 100%);
+  height: var(--base-h, 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transform: scale(var(--scale, 1));
+  /* The window is sized to base * scale, so the content must be laid out at the
+     base size and then scaled once. Scaling a box that already fills the
+     resized window scales it twice and leaves a transparent margin. */
+  transform: translate(-50%, -50%) scale(var(--scale, 1));
 }
 
-/* Browser / PWA build: no transparent desktop behind the widget. */
+/* Browser / PWA build: no transparent desktop behind the widget, so it sits in
+   the corner of the page the way it sits in the corner of the screen. */
 body.web {
   background: linear-gradient(160deg, #f7f2fb, #ece2f4);
 }
 body.web.dark {
   background: linear-gradient(160deg, #241f2b, #2e2737);
+}
+body.web #app {
+  left: auto;
+  top: auto;
+  right: 24px;
+  bottom: 24px;
+  transform: scale(var(--scale, 1));
+  transform-origin: bottom right;
 }
 
 #stage {
@@ -194,9 +210,9 @@ button:active {
 
 .corner {
   position: absolute;
-  bottom: 3px;
-  width: 20px;
-  height: 20px;
+  bottom: 2px;
+  width: 22px;
+  height: 22px;
   font-size: 11px;
 }
 #toggle {

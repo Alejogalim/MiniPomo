@@ -29,8 +29,10 @@ needed:
 3. It shows up in the launcher and on the shelf like any other app, and works
    offline.
 
-It runs in a normal window rather than floating over other windows — ChromeOS
-does not allow always-on-top for web apps. Chromebooks with Linux enabled can
+The widget sits in the bottom-right corner of the window, like it does on the
+desktop. Resize the window once to make it small — ChromeOS remembers the size
+per app. It runs in a normal window rather than floating over other windows:
+ChromeOS does not allow always-on-top for web apps. Chromebooks with Linux enabled can
 also run the AppImage or the `.deb` if you want the desktop widget.
 
 ### Package managers

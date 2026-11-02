@@ -214,6 +214,8 @@ function contentBox() {
   };
 }
 const baseSize = contentBox();
+document.documentElement.style.setProperty("--base-w", `${baseSize.w}px`);
+document.documentElement.style.setProperty("--base-h", `${baseSize.h}px`);
 
 async function applyScale(next) {
   scale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, Math.round(next / SCALE_STEP) * SCALE_STEP));
@@ -270,7 +272,10 @@ if (isLinux) {
   window.addEventListener("mouseup", endDrag);
   window.addEventListener("blur", endDrag);
 } else {
-  $("stage").setAttribute("data-tauri-drag-region", "deep");
+  // Keep the drag handle away from the settings panel so a press near its
+  // buttons can never be turned into a window drag.
+  $("pet").setAttribute("data-tauri-drag-region", "deep");
+  $("view-timer").setAttribute("data-tauri-drag-region", "deep");
 }
 
 $("pet").addEventListener("click", (e) => {

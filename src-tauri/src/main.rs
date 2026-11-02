@@ -174,6 +174,14 @@ fn main() {
             drag_end
         ])
         .setup(|app| {
+            // Some platforms report a minimum window size that blocks shrinking
+            // the widget below its design size.
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_min_size(Some(tauri::LogicalSize::new(80.0, 80.0)));
+                // WebView2 paints an opaque background by default, which shows as
+                // a rectangle around the widget on Windows.
+                let _ = window.set_background_color(Some(tauri::window::Color(0, 0, 0, 0)));
+            }
             let toggle = MenuItemBuilder::with_id("toggle", "Show / Hide").build(app)?;
             let quit = MenuItemBuilder::with_id("quit", "Quit").build(app)?;
             let menu = MenuBuilder::new(app).items(&[&toggle, &quit]).build()?;
