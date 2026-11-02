@@ -35,6 +35,26 @@ per app. It runs in a normal window rather than floating over other windows:
 ChromeOS does not allow always-on-top for web apps. Chromebooks with Linux enabled can
 also run the AppImage or the `.deb` if you want the desktop widget.
 
+### macOS says it can't verify the app
+
+The macOS build is ad-hoc signed but not notarized by Apple, so Gatekeeper blocks
+the first launch. Either install with Homebrew above (no prompt at all), or allow
+it once:
+
+1. Try to open MiniPomo, then click **Done** in the warning (not *Move to Bin*).
+2. Open **System Settings → Privacy & Security** and scroll down to **Security**.
+3. Next to "MiniPomo was blocked to protect your Mac" click **Open Anyway**,
+   enter your password, then click **Open** in the final dialog.
+
+On macOS 14 and older you can also right-click the app in Finder → **Open** →
+**Open**.
+
+If it instead says the app is *damaged*, clear the download flag:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/MiniPomo.app
+```
+
 ### Package managers
 
 **macOS — Homebrew.** This is the smoothest path: Homebrew downloads the app
